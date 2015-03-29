@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: 341eff1dba16da4479dd0b2dda3533af
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - scorer: {fileID: 190726, guid: 12829d1e9db376a4bb1790da67ebcf43, type: 2}
+  - block: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
