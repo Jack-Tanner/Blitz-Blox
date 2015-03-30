@@ -7,11 +7,9 @@ public class DisplayMessage : MonoBehaviour {
 	public Text messageDisplay;
 	float messageDisplayLength;
 
-	// Use this for initialization
-	void Start () 
+	void Awake()
 	{
 		EmptyMessage();
-		messageDisplay.text = "";
 	}
 	
 	// Update is called once per frame
@@ -38,7 +36,6 @@ public class DisplayMessage : MonoBehaviour {
 
 	public void SetMessage(string newMessageText, float displayTime)
 	{
-		print ("begin displaying message");
 		messageDisplay.text = newMessageText;
 		messageDisplayLength = displayTime;
 	}
