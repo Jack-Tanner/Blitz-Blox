@@ -4,17 +4,11 @@ using System.Collections;
 
 public class GameHandlerScript : MonoBehaviour {
 
-
-	public CanvasGroup menuPanel;
-
-    public Grid blockGrid;
+	public Grid blockGrid;
     public Spawner spawner;
-    BlockadeSetup _blockade;
-	int _level;
+
 	string specialColour = "Yellow";
 	//bool specialReady = true;
-
-	public Camera _cam;
 
 	bool hasLoaded = false;
 
@@ -23,21 +17,14 @@ public class GameHandlerScript : MonoBehaviour {
 
 	public CanvasGroup SpecialButton;
 
+	//Use to initialise local variables
     void Awake()
 	{
-		print ("Awake Game Handler");
-		Screen.SetResolution (480, 800, false);
 	}
 
+	//use to initialise "GetComponent"-dependant variables
     void Start () 
-	{
-		print ("Start Game Handler");
-		_cam.GetComponent<Camera>().aspect = 3.0f / 5.0f;
-
-        _blockade = GetComponent<BlockadeSetup>();
-        
-		_level = 0;
-		NextLevel ();
+	{  
 	}
 
 	void Update()
@@ -59,28 +46,6 @@ public class GameHandlerScript : MonoBehaviour {
 				{
 					//spawner.Shoot();
 				}
-			}
-			if(Input.GetKeyDown (KeyCode.Menu))
-			{
-				if(Time.timeScale == 0.0f)
-				{
-					GetComponent<PauseUnpause>().UnPause();
-					GetComponent<MenuPanelHandler>().DeactivatePanel(menuPanel);
-				}
-				else
-				{
-					GetComponent<PauseUnpause>().Pause();
-					GetComponent<MenuPanelHandler>().ActivatePanel(menuPanel);
-				}
-			}
-			if(Input.GetKey(KeyCode.D))
-			{
-				blockGrid.RemoveAllBlocks();
-			}
-			if (Input.GetKey(KeyCode.R))
-			{
-				blockGrid.RemoveAllBlocks();
-				_blockade.GenerateLevel();
 			}
 			if(Input.GetKey(KeyCode.Escape))
 			{
@@ -134,14 +99,7 @@ public class GameHandlerScript : MonoBehaviour {
                 }
 			}
         }
-	}
-
-	void NextLevel()
-	{
-		_level++;
-		if(spawner.speed <35f)	spawner.speed += 2f;
-		GetComponent<DisplayMessage> ().SetMessage ("Level: " + _level.ToString (), 20);
-	}   
+	}	  
 
 	void specialreadyshits(bool huh)
 	{

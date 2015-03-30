@@ -5,6 +5,7 @@ public class Spawner : MonoBehaviour {
 
 	//Groups
 	public GameObject[] block;
+	public float baseSpeed = 21f;
 	public float speed = 21f;
 	public bool shooting = true;
 	private bool rotateLeft = false;
@@ -17,6 +18,42 @@ public class Spawner : MonoBehaviour {
 	public GameObject bg;
 	public GameObject holder;
 
+	void Start()
+    {
+		anim = bg.GetComponent<Animator> ();
+		holder_anim = holder.GetComponent<Animator> ();
+		randNum = RandomSelect();
+	}
+    
+	void FixedUpdate()
+	{
+		if (transform.eulerAngles.z >= maxAngle && transform.eulerAngles.z < 100) 
+		{
+			rotateLeft = true;
+		}
+        else if (transform.eulerAngles.z <= 360-maxAngle && transform.eulerAngles.z > 100) 
+		{
+			rotateLeft = false;
+		}
+
+		if (pause > 10)
+		{
+			if (!rotateLeft) 
+			{
+				transform.Rotate (0, 0, speed/10f);
+			} 
+			else 
+			{
+				transform.Rotate (0,0,-speed/10f);
+			}
+		}
+		else
+		{
+			pause++;
+		}
+
+	}
+
 	//Group Spawning Function
 	void spawnNext()
 	{
@@ -24,7 +61,7 @@ public class Spawner : MonoBehaviour {
 		Instantiate (block[randNum], transform.position+new Vector3 (0,-0.2f,0), Quaternion.identity);
 		shooting = true;
 	}
-//blue green lightblue red yellow
+	//blue green lightblue red yellow
 	void spawnSpecial(string colour)
 	{
 		GameObject specialBlock;
@@ -61,42 +98,6 @@ public class Spawner : MonoBehaviour {
 			Instantiate (specialBlock, transform.position + new Vector3 (0, -0.2f, 0), Quaternion.identity);
 		}
 		shooting = true;
-	}
-
-	void Start()
-    {
-		anim = bg.GetComponent<Animator> ();
-		holder_anim = holder.GetComponent<Animator> ();
-		randNum = RandomSelect();
-	}
-    
-	void FixedUpdate()
-	{
-		if (transform.eulerAngles.z >= maxAngle && transform.eulerAngles.z < 100) 
-		{
-			rotateLeft = true;
-		}
-        else if (transform.eulerAngles.z <= 360-maxAngle && transform.eulerAngles.z > 100) 
-		{
-			rotateLeft = false;
-		}
-
-		if (pause > 10)
-		{
-			if (!rotateLeft) 
-			{
-				transform.Rotate (0, 0, speed/10f);
-			} 
-			else 
-			{
-				transform.Rotate (0,0,-speed/10f);
-			}
-		}
-		else
-		{
-			pause++;
-		}
-
 	}
 
     public void Shoot()
