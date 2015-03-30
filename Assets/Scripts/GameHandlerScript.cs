@@ -6,22 +6,19 @@ public class GameHandlerScript : MonoBehaviour {
 
 	public int score, multiplier, lastIncrease=0;
 	public Text sDisp, mDisp;
-	Text scoreDisplay;
-	public Text levelUpDisplay;
+
 	public ScoreboardHandler scoreboard;
-	public float greyDumpTime;
-	float timeToGreyDump;
-	public Block greyBlock;
+
 	public CanvasGroup menuPanel;
+
 	public GameObject gameOverScore;
 	public GameObject gameOverScreen;
 	public CanvasGroup gameOverPanel;
 
-    Grid blockGrid;
+    public Grid blockGrid;
     public Spawner spawner;
     BlockadeSetup _blockade;
 	int _level;
-	float levelUpText;
 	string specialColour = "Yellow";
 	//bool specialReady = true;
 
@@ -39,7 +36,6 @@ public class GameHandlerScript : MonoBehaviour {
 	{
 		Screen.SetResolution (480, 800, false);
 		_cam.GetComponent<Camera>().aspect = 3.0f / 5.0f;
-		timeToGreyDump = Time.time + greyDumpTime;
 
 		//gameOverScore.guiText.enabled = false;
 
@@ -53,18 +49,6 @@ public class GameHandlerScript : MonoBehaviour {
 		UpdateMultiplierDisplay ();
 		_level = 0;
 		NextLevel ();
-	}
-
-	void DumpGreys()
-	{
-		spawner.shooting = true;
-		Block thisBlock;
-		for (float x=-1.92f;x<2.0f;x+=0.64f)
-		{
-			thisBlock = (Block)Instantiate(greyBlock, new Vector3(x,2.88f,-0.5f),Quaternion.identity);
-			blockGrid.AddBlockToGrid(thisBlock);
-		}
-		rowsMoving = true;
 	}
 
 	void Update()
@@ -86,16 +70,6 @@ public class GameHandlerScript : MonoBehaviour {
 				{
 					//spawner.Shoot();
 				}*/
-			}
-			if(Time.time >= timeToGreyDump - 1.0f && Time.time < timeToGreyDump)
-			{
-				levelUpDisplay.text = "Greys Incomming";
-				levelUpText = Time.time;
-			}
-			if(Time.time >= timeToGreyDump)
-			{
-				DumpGreys();
-				timeToGreyDump = Time.time + greyDumpTime/_level;
 			}
 			if(Input.GetKeyDown (KeyCode.Menu))
 			{
@@ -130,15 +104,13 @@ public class GameHandlerScript : MonoBehaviour {
 				Application.LoadLevel(0);
 			}
 		}
+
 		if(score >= lastIncrease+100 && spawner.speed <35)
 		{
 			NextLevel();
 			lastIncrease += 100;
 		}
-		if(levelUpText+2<Time.time)
-		{
-			levelUpDisplay.text = "";
-		}
+
 		if(!hasLoaded)
 		{
 			var blocks = Object.FindObjectsOfType<Block> ();
@@ -149,11 +121,13 @@ public class GameHandlerScript : MonoBehaviour {
 			spawner.shooting = false;
 			hasLoaded = true;
 		}
+
 		if(!blockGrid.CheckColumns ())
 		{
 			rowsMoving = true;
 			spawner.shooting = true;
 		}
+
         if(rowsMoving)
 		{
 			if(blockGrid.MoveBlocksDown())
@@ -188,8 +162,7 @@ public class GameHandlerScript : MonoBehaviour {
 	{
 		_level++;
 		if(spawner.speed <35f)	spawner.speed += 2f;
-		levelUpDisplay.text = "Level: " + _level.ToString ();
-		levelUpText = Time.time;
+		GetComponent<DisplayMessage> ().SetMessage ("Level: " + _level.ToString (), 20);
 	}
 
     void UpdateMultiplier()
