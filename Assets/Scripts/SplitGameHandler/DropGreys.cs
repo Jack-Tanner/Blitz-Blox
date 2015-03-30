@@ -8,16 +8,14 @@ public class DropGreys : MonoBehaviour {
 	float timeToGreyDump;
 	public Block greyBlock;
 
-	Spawner spawner;
-	Grid blockGrid;
-
-	// Use this for initialization
+	void Awake()
+	{
+		print ("Awake Grey Dropper");
+		timeToGreyDump = Time.time + greyDumpTime;
+	}
 	void Start () 
 	{
-		timeToGreyDump = Time.time + greyDumpTime;
-
-		spawner = GetComponent<GameHandlerScript>().spawner;
-		blockGrid = GetComponent<GameHandlerScript>().blockGrid;
+		print ("Start Grey Dropper");
 	}
 	
 	// Update is called once per frame
@@ -26,7 +24,6 @@ public class DropGreys : MonoBehaviour {
 		//If the time to dump approaches then warn the Committee of Toilet Security about the dump increase
 		if(Time.time >= timeToGreyDump - 1.0f && Time.time < timeToGreyDump)
 		{
-			print ("should be displaying message now...");
 			GetComponent<DisplayMessage>().SetMessage("Greys Incoming", -1);
 		}
 
@@ -41,12 +38,12 @@ public class DropGreys : MonoBehaviour {
 
 	void DumpGreys()
 	{
-		spawner.shooting = true;
+		GetComponent<GameHandlerScript>().spawner.shooting = true;
 		Block thisBlock;
 		for (float x=-1.92f;x<2.0f;x+=0.64f)
 		{
 			thisBlock = (Block)Instantiate(greyBlock, new Vector3(x,2.88f,-0.5f),Quaternion.identity);
-			blockGrid.AddBlockToGrid(thisBlock);
+			GetComponent<GameHandlerScript>().blockGrid.AddBlockToGrid(thisBlock);
 		}
 	}
 }
