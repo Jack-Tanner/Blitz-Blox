@@ -9,6 +9,7 @@ public class Grid : MonoBehaviour {
 	public string specialColour;
 
 	public GameObject emitter;
+	public GameHandlerScript gameHandler;
 
     float moveAmount = 0.0f;
 	
@@ -16,7 +17,8 @@ public class Grid : MonoBehaviour {
     float moveBy = (0.64f / 8.0f);
 
     // Use this for initialization
-    void Start () {
+    void Awake () 
+	{
         //Sets the size of the block grid and sets all to NULL.
         blockGrid = new Block[gridWidth, gridHeight];
 
@@ -28,14 +30,10 @@ public class Grid : MonoBehaviour {
             }
         }
     }
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 
     //Adds a single block to the grid.
-	public bool AddBlockToGrid(Block block) {
+	public bool AddBlockToGrid(Block block) 
+	{
         //Snap block in place.
 		SnapBlockToGrid (block);
         //Find it's grid position and add it to the grid.
@@ -72,46 +70,59 @@ public class Grid : MonoBehaviour {
         return false;
     }
 
-    //Simply removes the bottom row.
-    //TODO: Change this so it can remove any row.
-    public void RemoveFullRow()
-    {
-		specialColour = "";
-		GetComponent<AudioSource>().Play ();
-        RemoveRow(0);
-        MoveRowsDown();
-    }
+	//Removes a single block at a location.
+	public void RemoveBlock(int x, int y)
+	{
+		//Make sure the its within bounds...
+		if (x < 0 || y < 0)
+			return;
+		else if (x > gridWidth || y > gridHeight)
+			return;
+		//Try and remove the block and emit particles.
+		try
+		{
+			if (blockGrid[x, y] != null)
+			{
+				blockGrid[x, y].EmitParticles(75, blockGrid[x, y].transform.position);
+				DestroyObject(blockGrid[x, y].gameObject);
+				blockGrid[x, y] = null;
+			}
+		}
+		catch
+		{
+			Debug.Log ("Error upon 'RemoveBlock("+ x +","+ y + ")'");
+			return;
+		}
+	}
 
-    //Removes a row from the grid.
-    void RemoveRow(int y)
+    //Simply removes a given row
+    public void RemoveFullRow(int rowNum)
     {
+		GetComponent<AudioSource>().Play ();
+
 		int consecColour=0;
-		string prevColour = blockGrid [0, y].colour;
-        for (int x = 0; x < gridWidth; x++)
-        {
-			if(blockGrid[x,y].colour == prevColour)
+		string prevColour = blockGrid [0, rowNum].colour;
+		for (int x = 0; x < gridWidth; x++)
+		{
+			if(blockGrid[x,rowNum].colour == prevColour)
 			{
 				consecColour ++;
 				if(consecColour == 2)
 				{
-					QueueSpecial(prevColour);
+					specialColour = prevColour;
 				}
 			}
 			else
 			{
 				consecColour = 0;
-				prevColour = blockGrid[x,y].colour;
+				prevColour = blockGrid[x,rowNum].colour;
 			}
-			RemoveBlock (x, y);
-        }
+			RemoveBlock (x, rowNum);
+		}
+		MoveRowsDown(rowNum);
     }
-
-	public void QueueSpecial(string colour)
-	{
-		specialColour = colour;
-	}
     
-    //Removes ALL blocks, useful for debugging and for shutdown.
+    //Removes ALL blocks
 	public void RemoveAllBlocks()
 	{
 		for(int x = 0; x < gridWidth; x++)
@@ -125,32 +136,7 @@ public class Grid : MonoBehaviour {
 				}
 			}
 		}
-	}
-
-    //Removes a single block at a location.
-	public void RemoveBlock(int x, int y)
-	{
-        //Make sure the its within bounds...
-        if (x < 0 || y < 0)
-            return;
-        else if (x > gridWidth || y > gridHeight)
-            return;
-        //Try and remove the block and emit particles.
-        try
-        {
-            if (blockGrid[x, y] != null)
-            {
-                blockGrid[x, y].EmitParticles(75, blockGrid[x, y].transform.position);
-                DestroyObject(blockGrid[x, y].gameObject);
-                blockGrid[x, y] = null;
-            }
-        }
-        catch
-        {
-            return;
-        }
-
-	}
+	}   
     
     //Checks through each column to find if it has a hole in.
     public bool CheckColumns()
@@ -176,6 +162,7 @@ public class Grid : MonoBehaviour {
     //Moves all the blocks down.
     public bool MoveBlocksDown()
     {
+		Debug.Log ("Is this code even called?");
         //Move the blocks down.
         if(moveAmount < 0.64f)
         {
@@ -194,8 +181,7 @@ public class Grid : MonoBehaviour {
                 }
             }
 
-            moveAmount += moveBy;
-            
+            moveAmount += moveBy;            
 
             return false;
         }
@@ -211,7 +197,6 @@ public class Grid : MonoBehaviour {
 	                if (block != null)
 	                {
 						blockGrid[x,y] = null;
-	                    SnapBlockToGrid(block);
 						AddBlockToGrid(block);
 	                }
 				}
@@ -236,22 +221,27 @@ public class Grid : MonoBehaviour {
             {
                 if (blockGrid[x, y] != null)
                 {
-                    SnapBlockToGrid(blockGrid[x, y]);
+					Vector3 tempPos = blockGrid[x, y].block.position;
+					
+					tempPos.x = SnapToGridX (tempPos.x, gameHandler.blockSize);
+					tempPos.y = SnapToGridY (tempPos.y, gameHandler.blockSize);
+					
+					blockGrid[x, y].block.position = tempPos;
                 }
             }
         }
     }
 
     //Moves all the block GRID positions down one.
-    void MoveRowsDown()
+    void MoveRowsDown(int startingRow)
     {
-        for (int y = 1; y < gridHeight; y++)
+		for (int y = startingRow; y < gridHeight; y++)
         {
             for (int x = 0; x < gridWidth; x++)
             {
-                Block block = blockGrid[x, y];
-                if (block != null)
+				if (blockGrid[x, y] != null)
                 {
+					Block block = blockGrid[x, y];
                     blockGrid[x, y - 1] = block;
                     blockGrid[x, y] = null;
                 }
@@ -306,76 +296,63 @@ public class Grid : MonoBehaviour {
 
 	public Vector2 FindGridPosition(Block theBlock)
     {
-        float x = theBlock.block.position.x / theBlock.blockSize;
-        float y = theBlock.block.position.y / theBlock.blockSize;
+		float x = theBlock.block.position.x / gameHandler.blockSize;
+		float y = theBlock.block.position.y / gameHandler.blockSize;
 
 		int locX = (int) (x + 3f) , locY = (int) (y + 5.5f);
 		return new Vector2 (locX, locY);
 	}
 
-	public void SnapBlockToGrid(Block block)
+	Block GridAtPoint(Vector3 worldPos)
+	{
+		float x = worldPos.x / gameHandler.blockSize;
+		float y = worldPos.y / gameHandler.blockSize;
+		
+		int locX = (int) (x + 3f) , locY = (int) (y + 5.5f);
+
+		return blockGrid[locX, locY];
+	}
+
+	public void SnapBlockToGrid(Block theBlock)
     {
-        SnapToGridX (block);
-        SnapToGridY (block);
+		Vector3 tempPos = theBlock.block.position;
+
+		tempPos.x = SnapToGridX (tempPos.x, gameHandler.blockSize);
+		tempPos.y = SnapToGridY (tempPos.y, gameHandler.blockSize);
+
+		Block tempBlock = GridAtPoint (tempPos);
+
+		if(tempBlock != null)
+		{
+			Debug.Log ("CONFLICT ALERT:" + theBlock.colour + "into" + tempBlock.colour);
+		}
+
+		theBlock.block.position = tempPos;
 	}	
 	
-	void SnapToGridX(Block theBlock)
+	float SnapToGridX(float currentX, float blockSize)
 	{
-		Vector3 tempPos = theBlock.block.position;
-
-		float signX = tempPos.x / Mathf.Abs (tempPos.x);
+		float signX = currentX / Mathf.Abs (currentX);
 		
-		tempPos.x += theBlock.blockSize * 0.5f * signX;
-		tempPos.x -= tempPos.x % theBlock.blockSize;
+		currentX += blockSize * 0.5f * signX;
+		currentX -= currentX % blockSize;
 
-		if (float.IsNaN (tempPos.x))
-            tempPos.x = 0;
+		if (float.IsNaN (currentX))
+			currentX = 0;
 		
-		theBlock.block.position = tempPos;
-
+		return currentX;
 	}
 	
-	public void SnapToGridY(Block theBlock)
-	{
-		Vector3 tempPos = theBlock.block.position;
+	float SnapToGridY(float currentY, float blockSize)
+	{		
+		float signY = currentY / Mathf.Abs (currentY);
 		
-		float signY = tempPos.y / Mathf.Abs (tempPos.y);
+		currentY -= currentY % blockSize;
+		currentY += blockSize * 0.5f * signY;
 		
-		tempPos.y -= tempPos.y % theBlock.blockSize;
-		tempPos.y += theBlock.blockSize * 0.5f * signY;
+		if (float.IsNaN (currentY))
+			currentY = 0;
 		
-		if (float.IsNaN (tempPos.y))
-            tempPos.y = 0;
-		
-		theBlock.block.position =  tempPos;
+		return currentY;
 	}
-
-
-    /* void SnapToGridXSlide(Block theBlock)
-	{
-		Vector3 tempPos = theBlock.block.position;
-		
-		float signX = tempPos.x / Mathf.Abs (tempPos.x);
-		
-		if(theBlock.firingVector.x > 0)
-		{
-			tempPos.x += signX * (theBlock.blockSize - (tempPos.x % theBlock.blockSize));
-		}
-		else if (theBlock.firingVector.x < 0)
-		{
-			tempPos.x -= signX * (theBlock.blockSize - (tempPos.x % theBlock.blockSize));
-		}
-		else
-		{
-			tempPos.x += theBlock.blockSize * 0.5f * signX;
-			tempPos.x -= tempPos.x % theBlock.blockSize;
-		}
-		
-		if (float.IsNaN (tempPos.x))
-            tempPos.x = 0;
-
-        theBlock.block.position = tempPos;
-		
-	}
-	*/
 }

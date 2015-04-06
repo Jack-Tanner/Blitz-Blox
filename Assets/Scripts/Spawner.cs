@@ -3,26 +3,40 @@ using System.Collections;
 
 public class Spawner : MonoBehaviour {
 
-	//Groups
-	public GameObject[] block;
+	//Block Groups
+	public GameObject[] normalBlocks;
+	public GameObject[] specialBlocks;
+
+	//The minimum speed
 	public float baseSpeed = 21f;
-	public float speed = 21f;
+	//The current speed
+	public float speed;
+
+	//is a block currently on the move
 	public bool shooting = true;
+
+	//direction of rotation
 	private bool rotateLeft = false;
+	//max rotation angle
 	private float maxAngle = 65f;
-	private int colourState = -1;
+
+	//number representing next block colour to be fired
 	private int randNum = 0;
-	private Animator anim;
-	private Animator holder_anim;
-	private int pause = 9;
+
+	//pause timer
+	private int pause;
+	//length of pause timer
+	public int pauseTime = 5;
+
+
 	public GameObject bg;
 	public GameObject holder;
 
-	void Start()
-    {
-		anim = bg.GetComponent<Animator> ();
-		holder_anim = holder.GetComponent<Animator> ();
-		randNum = RandomSelect();
+	void Awake()
+	{
+		speed = baseSpeed;
+		randNum = Random.Range (0, normalBlocks.Length);
+		pause = pauseTime;
 	}
     
 	void FixedUpdate()
@@ -36,7 +50,7 @@ public class Spawner : MonoBehaviour {
 			rotateLeft = false;
 		}
 
-		if (pause > 10)
+		if (pause > pauseTime)
 		{
 			if (!rotateLeft) 
 			{
@@ -54,77 +68,56 @@ public class Spawner : MonoBehaviour {
 
 	}
 
-	//Group Spawning Function
-	void spawnNext()
+	void SpawnBlock(GameObject blockToSpawn)
 	{
-		//Spawn Group at current Position
-		Instantiate (block[randNum], transform.position+new Vector3 (0,-0.2f,0), Quaternion.identity);
+		GameObject temp = (GameObject)Instantiate (blockToSpawn, transform.position + new Vector3 (0, -0.2f, 0), Quaternion.identity);
+		temp.GetComponent<Block>().SetFiringVectorByAngle(transform.eulerAngles.z);
+		temp.GetComponent<Block>().SetSpeed(speed/120.0f);
 		shooting = true;
-	}
-	//blue green lightblue red yellow
-	void spawnSpecial(string colour)
-	{
-		GameObject specialBlock;
-		//Blue is 1
-		//Yellow is 2
-		//Empty is 0
-		switch(colour)
-		{
-		case "Blue":
-			specialBlock = block[5];
-			holder_anim.SetInteger("block_colour", 1);
-			break;
-		case "Green":
-			specialBlock = block[6];
-			holder_anim.SetInteger("block_colour", 0);
-			break;
-		case "LightBlue":
-			specialBlock = block[7];
-			holder_anim.SetInteger("block_colour", 0);
-			break;
-		case "Red":
-			specialBlock = block[8];
-			holder_anim.SetInteger("block_colour", 0);
-			break;
-		case "Yellow":
-			specialBlock = block[9];
-			holder_anim.SetInteger("block_colour", 2);
-			break;
-		default:
-			return;
-		}
-		if(specialBlock != null)
-		{
-			Instantiate (specialBlock, transform.position + new Vector3 (0, -0.2f, 0), Quaternion.identity);
-		}
-		shooting = true;
+		pause = 0;
 	}
 
     public void Shoot()
     {
         if (!shooting)
         {
-			Debug.Log("she did WHAT?!");
-            spawnNext();
-            randNum = RandomSelect();
-            colourState = randNum;
-            anim.SetInteger("bg_colour", colourState);
-			pause = 0;
+			SpawnBlock(normalBlocks[randNum]);
+
+			randNum = Random.Range (0, normalBlocks.Length);
+			bg.GetComponent<Animator>().SetInteger("bg_colour", randNum);
         }
-		Debug.Log ("Cuntsicles");
     }
 
 	public void ShootSpecial(string colour)
 	{
 		if (!shooting)
 		{
-			spawnSpecial(colour);
-			pause = 0;
+			//fire the appropriate colour and reset the special block holder to empty
+			switch(colour)
+			{
+			case "Blue":
+				SpawnBlock(specialBlocks[0]);
+				holder.GetComponent<Animator>().SetInteger("block_colour", 0);
+				break;
+			case "Green":
+				SpawnBlock(specialBlocks[1]);
+				holder.GetComponent<Animator>().SetInteger("block_colour", 0);
+				break;
+			case "LightBlue":
+				SpawnBlock(specialBlocks[2]);
+				holder.GetComponent<Animator>().SetInteger("block_colour", 0);
+				break;
+			case "Red":
+				SpawnBlock(specialBlocks[3]);
+				holder.GetComponent<Animator>().SetInteger("block_colour", 0);
+				break;
+			case "Yellow":
+				SpawnBlock(specialBlocks[4]);
+				holder.GetComponent<Animator>().SetInteger("block_colour", 0);
+				break;
+			default:
+				return;
+			}
 		}
-	}
-
-	int RandomSelect()
-	{
-		return Random.Range (0, 5);
 	}
 }

@@ -18,20 +18,20 @@ public class SpecialBlock : Block {
 					if (i != 0)
 					{
 						grid.RemoveBlock(x + i, y);
-						this.EmitParticles(emitNum, new Vector2(this.transform.position.x + (blockSize * i), this.transform.position.y));
+					this.EmitParticles(emitNum, new Vector2(this.transform.position.x + (gameHandler.blockSize * i), this.transform.position.y));
 						grid.RemoveBlock(x, y + i);
-						this.EmitParticles(emitNum, new Vector2(this.transform.position.x, this.transform.position.y + (blockSize * i)));
+					this.EmitParticles(emitNum, new Vector2(this.transform.position.x, this.transform.position.y + (gameHandler.blockSize * i)));
 					}
 				}
 
 				grid.RemoveBlock (x + 1, y + 1);
-				this.EmitParticles(emitNum, new Vector2(this.transform.position.x + blockSize, this.transform.position.y + blockSize));
+			this.EmitParticles(emitNum, new Vector2(this.transform.position.x + gameHandler.blockSize, this.transform.position.y + gameHandler.blockSize));
 				grid.RemoveBlock (x - 1, y - 1);
-				this.EmitParticles(emitNum, new Vector2(this.transform.position.x - blockSize, this.transform.position.y - blockSize));
+			this.EmitParticles(emitNum, new Vector2(this.transform.position.x - gameHandler.blockSize, this.transform.position.y - gameHandler.blockSize));
 				grid.RemoveBlock (x - 1, y + 1);
-				this.EmitParticles(emitNum, new Vector2(this.transform.position.x - blockSize, this.transform.position.y + blockSize));
+			this.EmitParticles(emitNum, new Vector2(this.transform.position.x - gameHandler.blockSize, this.transform.position.y + gameHandler.blockSize));
 				grid.RemoveBlock (x + 1, y - 1);
-				this.EmitParticles(emitNum, new Vector2(this.transform.position.x + blockSize, this.transform.position.y - blockSize));
+			this.EmitParticles(emitNum, new Vector2(this.transform.position.x + gameHandler.blockSize, this.transform.position.y - gameHandler.blockSize));
 				grid.RemoveBlock(x, y);
 				
 				handler.GetComponent<GameHandlerScript>().rowsMoving = true;
@@ -44,7 +44,6 @@ public class SpecialBlock : Block {
 	override public void Land()
 	{
 		isInAir = false;
-		isMoving = false;
 		
 		enabled = false;
 
