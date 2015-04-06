@@ -4,6 +4,8 @@ using System.Collections;
 
 public class GameHandlerScript : MonoBehaviour {
 
+	public float blockSize = 0.64f;
+
 	public Grid blockGrid;
     public Spawner spawner;
 
@@ -16,16 +18,6 @@ public class GameHandlerScript : MonoBehaviour {
 	public bool columnsMoving = false;
 
 	public CanvasGroup SpecialButton;
-
-	//Use to initialise local variables
-    void Awake()
-	{
-	}
-
-	//use to initialise "GetComponent"-dependant variables
-    void Start () 
-	{  
-	}
 
 	void Update()
 	{
@@ -87,12 +79,11 @@ public class GameHandlerScript : MonoBehaviour {
 					else if(blockGrid.CheckRowsForWin())
 					{
 						GetComponent<HandleScore>().UpdateScore();
-						blockGrid.RemoveFullRow();
+						blockGrid.RemoveFullRow(0);
 						if(blockGrid.specialColour != "")
 						{
 							specialColour = blockGrid.specialColour;
-							//specialReady = true;
-							specialreadyshits(true);
+							GetComponent<MenuPanelHandler>().ActivatePanel(SpecialButton);
 						}
 						rowsMoving = true;
 					}
@@ -100,14 +91,6 @@ public class GameHandlerScript : MonoBehaviour {
 			}
         }
 	}	  
-
-	void specialreadyshits(bool huh)
-	{
-		SpecialButton.interactable = huh;
-		SpecialButton.blocksRaycasts = huh;
-		SpecialButton.alpha = (huh ? 1 : 0);
-
-	}
 
     public void BlockLanded()
     {
@@ -120,13 +103,12 @@ public class GameHandlerScript : MonoBehaviour {
             if(blockGrid.CheckRowsForWin())
             {
 				GetComponent<HandleScore>().UpdateScore();
-                blockGrid.RemoveFullRow();
+                blockGrid.RemoveFullRow(0);
 				rowsMoving = true;
 				if(blockGrid.specialColour != "")
 				{
 					specialColour = blockGrid.specialColour;
-					//specialReady = true;
-					specialreadyshits(true);
+					GetComponent<MenuPanelHandler>().ActivatePanel(SpecialButton);
 				}
 			}
 			else
@@ -165,8 +147,7 @@ public class GameHandlerScript : MonoBehaviour {
 		if(!rowsMoving && !spawner.shooting)
 		{
 			spawner.ShootSpecial(specialColour);
-			//specialReady = false;
-			specialreadyshits(false);
+			GetComponent<MenuPanelHandler>().DeactivatePanel(SpecialButton);
 		}
 	}
 	

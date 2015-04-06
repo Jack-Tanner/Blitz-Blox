@@ -3,7 +3,7 @@ using System.Collections;
 
 public class BlockadeSetup : MonoBehaviour {
 	
-	public Block block;
+	public GameObject block;
 	
 	const int totalColumns = 7;
 	const int totalRows = 10;
@@ -49,14 +49,18 @@ public class BlockadeSetup : MonoBehaviour {
                     randNum = Random.Range(0, blockRateY);
                     if (randNum != 0)
                     {
-                        var b = (Block)Instantiate(block, blockPos, Quaternion.identity);
-                        if (!grid.AddBlockToGrid(b))
-                            DestroyObject(b.gameObject);
-                        b.isInAir = false;
-                        b.isMoving = false;
-                        b.enabled = false;
-                        blockRateY--;
-    
+						GameObject newBlock = (GameObject)Instantiate(block, blockPos,Quaternion.identity);
+						newBlock.GetComponent<Block>().SetFiringVectorByAngle(0.0f);
+						newBlock.GetComponent<Block>().SetSpeed(GetComponent<GameHandlerScript>().spawner.speed/120.0f);
+						newBlock.GetComponent<Block>().isInAir = false;
+                        //b.enabled = false;
+
+						if (!grid.AddBlockToGrid(newBlock.GetComponent<Block>()))
+						{
+							DestroyObject(newBlock);
+						}
+
+                        blockRateY--;    
                     }
                     else
                     {
