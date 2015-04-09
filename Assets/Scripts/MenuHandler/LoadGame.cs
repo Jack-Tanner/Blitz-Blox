@@ -9,3 +9,4 @@ public class LoadGame : MonoBehaviour {
 		Application.LoadLevel (scene);
 	}
 }
+ 

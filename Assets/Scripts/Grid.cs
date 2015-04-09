@@ -31,21 +31,6 @@ public class Grid : MonoBehaviour {
         }
     }
 
-    //Adds a single block to the grid.
-	public bool AddBlockToGrid(Block block) 
-	{
-        //Snap block in place.
-		SnapBlockToGrid (block);
-        //Find it's grid position and add it to the grid.
-		Vector2 blockLoc = FindGridPosition (block);
-        if(blockGrid[(int)blockLoc.x, (int)blockLoc.y] == null)
-        {
-            blockGrid[(int)blockLoc.x, (int)blockLoc.y] = block;
-            return true;
-        }
-        return false;
-	}
-
     //Checks through all the rows to find if a row is full.
     public bool CheckRowsForWin()
     {
@@ -109,7 +94,7 @@ public class Grid : MonoBehaviour {
 				consecColour ++;
 				if(consecColour == 2)
 				{
-					specialColour = prevColour;
+					specialColour = "Yellow";
 				}
 			}
 			else
@@ -322,7 +307,22 @@ public class Grid : MonoBehaviour {
 		return new Vector2 (x, y);
 	}
 
-	public void SnapBlockToGridOld(Block theBlock)
+    //Adds a single block to the grid.
+    public bool AddBlockToGrid(Block block)
+    {
+        //Snap block in place.
+        SnapBlockToGrid(block);
+        //Find it's grid position and add it to the grid.
+        Vector2 blockLoc = FindGridPosition(block);
+        if (blockGrid[(int)blockLoc.x, (int)blockLoc.y] == null)
+        {
+            blockGrid[(int)blockLoc.x, (int)blockLoc.y] = block;
+            return true;
+        }
+        return false;
+    }
+
+    public void SnapBlockToGridOld(Block theBlock)
     {
 		Vector3 tempPos = theBlock.block.position;
 
@@ -341,8 +341,8 @@ public class Grid : MonoBehaviour {
 
 	public void SnapBlockToGrid(Block theBlock)
 	{		
-		//gather list of free locations
-		Vector2[] freePoints = new Vector2[gridWidth*gridHeight];
+        //gather list of free locations
+        Vector2[] freePoints = new Vector2[gridWidth*gridHeight];
 		int counter = 0;
 		for (int i = 0; i < gridWidth; i++)
 		{

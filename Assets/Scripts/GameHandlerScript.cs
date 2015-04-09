@@ -19,77 +19,80 @@ public class GameHandlerScript : MonoBehaviour {
 
 	public CanvasGroup SpecialButton;
 
+    void Awake()
+    {
+        GetComponent<PauseUnpause>().UnPause();
+    }
+
 	void Update()
 	{
-		if(spawner.enabled)
-		{
-			if(!spawner.shooting)
+        if (spawner.enabled)
+        {
+            if (!spawner.shooting)
+            {
+                if (rowsMoving)
+                {
+                    spawner.shooting = true;
+                }/*
+			else if(Input.GetMouseButtonDown(1) && specialReady)
 			{
-				if(rowsMoving)
-				{
-					spawner.shooting = true;
-				}/*
-				else if(Input.GetMouseButtonDown(1) && specialReady)
-				{
-					spawner.ShootSpecial(specialColour);
-					//specialReady = false;
-				}*/
-				else if (Input.GetMouseButtonDown(0))
-				{
-					//spawner.Shoot();
-				}
-			}
-			if(Input.GetKey(KeyCode.Escape))
-			{
-				//ExitConfirm();
-				Application.LoadLevel(0);
-			}
-		}
+				spawner.ShootSpecial(specialColour);
+				//specialReady = false;
+			}*/
+                else if (Input.GetMouseButtonDown(0))
+                {
+                    //spawner.Shoot();
+                }
+            }
+            if (Input.GetKey(KeyCode.Escape))
+            {
+                //ExitConfirm();
+                Application.LoadLevel(0);
+            }
+        }
 
-		if(!hasLoaded)
-		{
-			var blocks = Object.FindObjectsOfType<Block> ();
-			foreach (Block blocky in blocks)
-			{
-				blockGrid.AddBlockToGrid(blocky);
-			}
-			spawner.shooting = false;
-			hasLoaded = true;
-		}
+        if (!hasLoaded)
+        {
+            spawner.shooting = false;
+            hasLoaded = true;
+        }
 
-		if(!blockGrid.CheckColumns ())
-		{
-			rowsMoving = true;
-			spawner.shooting = true;
-		}
+        if (!blockGrid.CheckColumns())
+        {
+            rowsMoving = true;
+            spawner.shooting = true;
+        }
 
-        if(rowsMoving)
-		{
-			if(blockGrid.MoveBlocksDown())
-			{
+        if (rowsMoving)
+        {
+            if (blockGrid.MoveBlocksDown())
+            {
                 if (blockGrid.CheckColumns())
                 {
-					blockGrid.SnapBlocksToGrid();
-					rowsMoving = false;
-					spawner.shooting = false;
-					if(blockGrid.CheckForGameOver())
-					{
-						GetComponent<GameOverScript>().GameOver ();
-					}
-					else if(blockGrid.CheckRowsForWin())
-					{
-						GetComponent<HandleScore>().UpdateScore();
-						blockGrid.RemoveFullRow(0);
-						if(blockGrid.specialColour != "")
-						{
-							specialColour = blockGrid.specialColour;
-							GetComponent<MenuPanelHandler>().ActivatePanel(SpecialButton);
-						}
-						rowsMoving = true;
-					}
+                    blockGrid.SnapBlocksToGrid();
+                    if (blockGrid.CheckForGameOver())
+                    {
+                        GetComponent<GameOverScript>().GameOver();
+                        spawner.shooting = false;
+                    }
+                    else if (blockGrid.CheckRowsForWin())
+                    {
+                        GetComponent<HandleScore>().UpdateScore();
+                        blockGrid.RemoveFullRow(0);
+                        if (blockGrid.specialColour != "")
+                        {
+                            specialColour = blockGrid.specialColour;
+                            GetComponent<MenuPanelHandler>().ActivatePanel(SpecialButton);
+                        }
+                        rowsMoving = true;
+                    }
+
+                    rowsMoving = false;
+                    spawner.shooting = false;
                 }
-			}
+            }
         }
+        
 	}	  
 
     public void BlockLanded()
@@ -97,6 +100,7 @@ public class GameHandlerScript : MonoBehaviour {
         if (blockGrid.CheckForGameOver() && !rowsMoving)
         {
             GetComponent<GameOverScript>().GameOver();
+            spawner.shooting = false;
         }
         else
         {
@@ -144,18 +148,18 @@ public class GameHandlerScript : MonoBehaviour {
 
 	public void ShootSpecial()
 	{
-		if(!rowsMoving && !spawner.shooting)
-		{
-			spawner.ShootSpecial(specialColour);
-			GetComponent<MenuPanelHandler>().DeactivatePanel(SpecialButton);
-		}
+        if (!rowsMoving && !spawner.shooting)
+        {
+            spawner.ShootSpecial(specialColour);
+            GetComponent<MenuPanelHandler>().DeactivatePanel(SpecialButton);
+        }
 	}
 	
 	public void Shoot()
-	{
-		if(!rowsMoving && !spawner.shooting)
-		{
-			spawner.Shoot();
-		}
+    { 
+        if (!rowsMoving && !spawner.shooting)
+        {
+            spawner.Shoot();
+        }
 	}
 }

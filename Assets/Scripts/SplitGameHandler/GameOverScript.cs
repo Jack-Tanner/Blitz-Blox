@@ -9,15 +9,18 @@ public class GameOverScript : MonoBehaviour {
 	public GameObject gameOverScore;
 	public GameObject gameOverScreen;
 	public CanvasGroup gameOverPanel;
+    public GameObject special;
 
-	public void GameOver()
+    public void GameOver()
 	{
 		//Pause the game
 		GetComponent<PauseUnpause> ().Pause ();		
 		GetComponent<AudioSource>().enabled = false;
+        special.SetActive(false);
 
-		//Display Game Over Screen
-		Instantiate(gameOverScreen, new Vector3(0, 0, -1), Quaternion.identity);
+
+        //Display Game Over Screen
+        Instantiate(gameOverScreen, new Vector3(0, 0, 1), Quaternion.identity);
 		GetComponent<MenuPanelHandler> ().ActivatePanel (gameOverPanel);
 		string scoreMessage = "You Scored:\n" + GetComponent<HandleScore>().score.ToString ();
 		gameOverScore.GetComponent<Text> ().text = scoreMessage;
