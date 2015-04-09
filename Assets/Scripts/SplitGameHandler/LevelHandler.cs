@@ -38,7 +38,7 @@ public class LevelHandler : MonoBehaviour {
 
 		GetComponent<GameHandlerScript> ().spawner.speed = GetComponent<GameHandlerScript> ().spawner.baseSpeed + (_level - 1) * 2f;
 
-		if(GetComponent<GameHandlerScript>().spawner.speed >35f) GetComponent<GameHandlerScript>().spawner.speed =35f;
+		if(GetComponent<GameHandlerScript>().spawner.speed >70f) GetComponent<GameHandlerScript>().spawner.speed =70f;
 
 		GetComponent<DisplayMessage> ().SetMessage ("Level: " + _level.ToString (), 50);
 	}

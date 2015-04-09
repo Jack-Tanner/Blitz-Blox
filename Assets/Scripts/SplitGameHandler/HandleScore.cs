@@ -11,16 +11,12 @@ public class HandleScore : MonoBehaviour {
 
 	void Awake()
 	{
-		print ("Awake Score Handler");
-
 		UpdateScoreDisplay ();
 		UpdateMultiplierDisplay ();
 	}
 
 	void Start () 
 	{
-		print ("Start Score Handler");
-
 		GameObject gridObject = GameObject.FindWithTag("Grid");
 		blockGrid = gridObject.GetComponent<Grid>();
 	}

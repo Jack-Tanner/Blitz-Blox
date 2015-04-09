@@ -17,7 +17,7 @@ public class Block : MonoBehaviour {
 
 	public bool isInAir = true;
 
-	Collider2D collidedBlock;
+	Collider2D whatAmIinsideNow;
 		
 	public Grid grid;
 	public GameHandlerScript gameHandler;
@@ -52,30 +52,106 @@ public class Block : MonoBehaviour {
 			return;
 		}
 
+		whatAmIinsideNow = collider;
 		GetComponent<AudioSource>().Play ();
-
+		
 		switch (collider.tag) 
 		{
 		case "Wall":
+			Debug.Log ("Collision between " + colour + "and " + collider.name);
 			WallCollide(collider);
 			break;
 		case "Floor":
+			Debug.Log ("Collision between " + colour + "and " + collider.name);
 			FloorCollide();
 			break;
 		case "Block":
-			BlockCollide(Mathf.Abs(block.position.x - collider.transform.position.x) > Mathf.Abs(block.position.y - collider.transform.position.y),
-						 collider);
+			Debug.Log ("Collision between " + colour + "and " + collider.GetComponent<Block>().colour);
+			BlockCollide(Mathf.Abs(block.position.x - collider.transform.position.x) >= Mathf.Abs(block.position.y - collider.transform.position.y),
+			             collider);
+			break;
+		}
+
+	}
+
+	void OnTriggerExit2D(Collider2D collider)
+	{
+		if (!isInAir)
+		{
+			//ignore any collision if the block is not falling
+			return;
+		}
+		
+		GetComponent<AudioSource>().Play ();
+		
+		switch (collider.tag) 
+		{
+		case "Wall":
+			Debug.Log ("Collision exited between " + colour + "and " + collider.name);
+			break;
+		case "Floor":
+			Debug.Log ("Collision exited between " + colour + "and " + collider.name);
+			break;
+		case "Block":
+			Debug.Log ("Collision exited between " + colour + "and " + collider.GetComponent<Block>().colour);
 			break;
 		}
 	}
 
+	void OnTriggerStay2D(Collider2D collider)
+	{
+		if(whatAmIinsideNow == collider)
+		{
+			return;
+		}
+		whatAmIinsideNow = collider;
+
+		if (!isInAir)
+		{
+			//ignore any collision if the block is not falling
+			return;
+		}
+		
+		GetComponent<AudioSource>().Play ();
+		
+		switch (collider.tag) 
+		{
+		case "Wall":
+			Debug.Log ("Collision between " + colour + "and " + collider.name);
+			WallCollide(collider);
+			break;
+		case "Floor":
+			Debug.Log ("Collision between " + colour + "and " + collider.name);
+			FloorCollide();
+			break;
+		case "Block":
+			Debug.Log ("Collision between " + colour + "and " + collider.GetComponent<Block>().colour);
+			BlockCollide(Mathf.Abs(block.position.x - collider.transform.position.x) >= Mathf.Abs(block.position.y - collider.transform.position.y),
+			             collider);
+			break;
+		}
+
+	}
 	//------------------------------------------------------react to collisions------------------------------------------------------------------
 
 	void WallCollide(Collider2D collider)
 	{
-		firingVector.x *= -1;
-		float signX = transform.position.y - collider.transform.position.y / Mathf.Abs (transform.position.y - collider.transform.position.y);
-		EmitParticles(5, transform.position+new Vector3(0,(gameHandler.blockSize/2)*signX,0));
+		if(firingVector.x != 0)
+		{
+			float direction = firingVector.x / Mathf.Abs (firingVector.x);
+			if(collider.name == "Right Wall")
+			{
+				//go left(nigga-tive)
+				firingVector.x *= direction * -1;
+			}
+			else
+			{
+				//go white(positive)
+				firingVector.x *= direction;
+			}
+			float signX = transform.position.y - collider.transform.position.y / Mathf.Abs (transform.position.y - collider.transform.position.y);
+			EmitParticles(5, transform.position+new Vector3(0,(gameHandler.blockSize/2)*signX,0));
+		}
 	}
 	
 	void FloorCollide()
@@ -95,6 +171,7 @@ public class Block : MonoBehaviour {
 
 		if (horizontal)
 		{
+			grid.SnapHorizontally(this);
 			if(collider.GetComponent<Block>().isInAir)
 			{
 				if(!vectorUpdated)
@@ -117,7 +194,7 @@ public class Block : MonoBehaviour {
 		}
 		else
 		{
-
+			grid.SnapVertically(this);
 			if(collider.GetComponent<Block>().isInAir)
 			{
 				if(!vectorUpdated)

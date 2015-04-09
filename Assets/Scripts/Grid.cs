@@ -162,7 +162,6 @@ public class Grid : MonoBehaviour {
     //Moves all the blocks down.
     public bool MoveBlocksDown()
     {
-		Debug.Log ("Is this code even called?");
         //Move the blocks down.
         if(moveAmount < 0.64f)
         {
@@ -298,9 +297,9 @@ public class Grid : MonoBehaviour {
     {
 		float x = theBlock.block.position.x / gameHandler.blockSize;
 		float y = theBlock.block.position.y / gameHandler.blockSize;
-
+		
 		int locX = (int) (x + 3f) , locY = (int) (y + 5.5f);
-		return new Vector2 (locX, locY);
+		return new Vector2(locX, locY);
 	}
 
 	Block GridAtPoint(Vector3 worldPos)
@@ -313,7 +312,17 @@ public class Grid : MonoBehaviour {
 		return blockGrid[locX, locY];
 	}
 
-	public void SnapBlockToGrid(Block theBlock)
+	Vector2 GridToWorld(int gridI, int gridJ)
+	{
+		float x, y;
+
+		x = ((float)gridI - 3f) * gameHandler.blockSize;
+		y = ((float)gridJ - 5.5f) * gameHandler.blockSize;
+
+		return new Vector2 (x, y);
+	}
+
+	public void SnapBlockToGridOld(Block theBlock)
     {
 		Vector3 tempPos = theBlock.block.position;
 
@@ -328,7 +337,62 @@ public class Grid : MonoBehaviour {
 		}
 
 		theBlock.block.position = tempPos;
-	}	
+	}
+
+	public void SnapBlockToGrid(Block theBlock)
+	{		
+		//gather list of free locations
+		Vector2[] freePoints = new Vector2[gridWidth*gridHeight];
+		int counter = 0;
+		for (int i = 0; i < gridWidth; i++)
+		{
+			for (int j = 0; j < gridHeight; j++)
+			{
+				if(blockGrid[i, j] == null)
+				{
+					freePoints[counter++] = GridToWorld(i,j);
+					//Debug.Log("i: " + i + ", j: " + j + "; X: " + freePoints[counter - 1].x.ToString("F4") + ", Y: " + freePoints[counter - 1].y.ToString("F4"));
+				}
+			}
+		}
+
+		//loop through empty slots to find nearest one
+		float currentDist, shortestDist = 10000;
+		Vector2 nearestWorldPoint = new Vector2(theBlock.block.position.x,theBlock.block.position.y);
+		Vector2 blockLocation = new Vector2 (theBlock.block.position.x, theBlock.block.position.y);
+
+		for(int i = 0; i < counter; i++)
+		{
+			currentDist = (blockLocation - freePoints[i]).magnitude;
+			if(shortestDist > currentDist)
+			{
+				shortestDist = currentDist;
+				nearestWorldPoint = freePoints[i];
+			}
+		}
+
+		//push block to correct position
+		Vector3 tempPos = theBlock.block.position;
+		
+		tempPos.x = nearestWorldPoint.x;
+		tempPos.y = nearestWorldPoint.y;
+				
+		theBlock.block.position = tempPos;
+	}
+
+	public void SnapHorizontally(Block blockToSnap)
+	{
+		Vector3 tempPos = blockToSnap.block.position;
+		tempPos.x = SnapToGridX (tempPos.x, gameHandler.blockSize);
+		blockToSnap.block.position = tempPos;
+	}
+
+	public void SnapVertically(Block blockToSnap)
+	{
+		Vector3 tempPos = blockToSnap.block.position;
+		tempPos.y = SnapToGridY (tempPos.y, gameHandler.blockSize);
+		blockToSnap.block.position = tempPos;
+	}
 	
 	float SnapToGridX(float currentX, float blockSize)
 	{
