@@ -3,11 +3,7 @@ using System.Collections;
 
 public class DebugControls : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
+	bool rLast = false;	
 	// Update is called once per frame
 	void Update () 
 	{
@@ -15,10 +11,15 @@ public class DebugControls : MonoBehaviour {
 		{
 			GetComponent<GameHandlerScript>().blockGrid.RemoveAllBlocks();
 		}
-		if (Input.GetKey(KeyCode.R))
+		if (Input.GetKey(KeyCode.R) && !rLast)
 		{
+			rLast = true;
 			GetComponent<GameHandlerScript>().blockGrid.RemoveAllBlocks();
 			GetComponent<BlockadeSetup>().GenerateLevel();
+		}
+		else if(!Input.GetKey(KeyCode.R))
+		{
+			rLast = false;
 		}
 		if (Input.GetKey(KeyCode.T))
 		{
