@@ -103,7 +103,7 @@ public class Spawner : MonoBehaviour {
 				SpawnBlock(specialBlocks[1]);
 				holder.GetComponent<Animator>().SetInteger("block_colour", 0);
 				break;
-			case "LightBlue":
+			case "Cyan":
 				SpawnBlock(specialBlocks[2]);
 				holder.GetComponent<Animator>().SetInteger("block_colour", 0);
 				break;
@@ -118,6 +118,31 @@ public class Spawner : MonoBehaviour {
 			default:
 				return;
 			}
+		}
+	}
+
+	public void ShowSpecial(string colour)
+	{
+		//Show the current special block
+		switch(colour)
+		{
+		case "Blue":
+			holder.GetComponent<Animator>().SetInteger("block_colour", 0);
+			break;
+		case "Green":
+			holder.GetComponent<Animator>().SetInteger("block_colour", 1);
+			break;
+		case "Cyan":
+			holder.GetComponent<Animator>().SetInteger("block_colour", 2);
+			break;
+		case "Red":
+			holder.GetComponent<Animator>().SetInteger("block_colour", 3);
+			break;
+		case "Yellow":
+			holder.GetComponent<Animator>().SetInteger("block_colour", 4);
+			break;
+		default:
+			return;
 		}
 	}
 }

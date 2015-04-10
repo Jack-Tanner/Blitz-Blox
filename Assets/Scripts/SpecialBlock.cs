@@ -18,21 +18,54 @@ public class SpecialBlock : Block {
 					if (i != 0)
 					{
 						grid.RemoveBlock(x + i, y);
-					this.EmitParticles(emitNum, new Vector2(this.transform.position.x + (gameHandler.blockSize * i), this.transform.position.y));
+						this.EmitParticles(emitNum, new Vector2(this.transform.position.x + (gameHandler.blockSize * i), this.transform.position.y));
 						grid.RemoveBlock(x, y + i);
-					this.EmitParticles(emitNum, new Vector2(this.transform.position.x, this.transform.position.y + (gameHandler.blockSize * i)));
+						this.EmitParticles(emitNum, new Vector2(this.transform.position.x, this.transform.position.y + (gameHandler.blockSize * i)));
 					}
 				}
 
 				grid.RemoveBlock (x + 1, y + 1);
-			this.EmitParticles(emitNum, new Vector2(this.transform.position.x + gameHandler.blockSize, this.transform.position.y + gameHandler.blockSize));
+				this.EmitParticles(emitNum, new Vector2(this.transform.position.x + gameHandler.blockSize, this.transform.position.y + gameHandler.blockSize));
 				grid.RemoveBlock (x - 1, y - 1);
-			this.EmitParticles(emitNum, new Vector2(this.transform.position.x - gameHandler.blockSize, this.transform.position.y - gameHandler.blockSize));
+				this.EmitParticles(emitNum, new Vector2(this.transform.position.x - gameHandler.blockSize, this.transform.position.y - gameHandler.blockSize));
 				grid.RemoveBlock (x - 1, y + 1);
-			this.EmitParticles(emitNum, new Vector2(this.transform.position.x - gameHandler.blockSize, this.transform.position.y + gameHandler.blockSize));
+				this.EmitParticles(emitNum, new Vector2(this.transform.position.x - gameHandler.blockSize, this.transform.position.y + gameHandler.blockSize));
 				grid.RemoveBlock (x + 1, y - 1);
-			this.EmitParticles(emitNum, new Vector2(this.transform.position.x + gameHandler.blockSize, this.transform.position.y - gameHandler.blockSize));
+				this.EmitParticles(emitNum, new Vector2(this.transform.position.x + gameHandler.blockSize, this.transform.position.y - gameHandler.blockSize));
 				grid.RemoveBlock(x, y);
+				
+				handler.GetComponent<GameHandlerScript>().rowsMoving = true;
+				break;
+			case "Red":
+				for (int i = 0; i < 7; i++)
+				{
+					grid.RemoveBlock(x + i, y);
+					this.EmitParticles(emitNum, new Vector2(this.transform.position.x + (gameHandler.blockSize * i), this.transform.position.y));
+					grid.RemoveBlock(x - i, y);
+					this.EmitParticles(emitNum, new Vector2(this.transform.position.x - (gameHandler.blockSize * i), this.transform.position.y));
+				}
+				for (int j = 0; j < 10; j++)
+				{
+					grid.RemoveBlock(x, y + j);
+					this.EmitParticles(emitNum, new Vector2(this.transform.position.x, this.transform.position.y + (gameHandler.blockSize * j)));
+					grid.RemoveBlock(x, y - j);
+					this.EmitParticles(emitNum, new Vector2(this.transform.position.x, this.transform.position.y - (gameHandler.blockSize * j)));
+				}
+
+				handler.GetComponent<GameHandlerScript>().rowsMoving = true;
+				break;
+			case "Cyan":
+				for (int i = 0; i < 7; i++)
+				{
+					grid.RemoveBlock(x + i, y + i);
+					this.EmitParticles(emitNum, new Vector2(this.transform.position.x + (gameHandler.blockSize * i), this.transform.position.y + (gameHandler.blockSize * i)));
+					grid.RemoveBlock(x - i, y - i);
+					this.EmitParticles(emitNum, new Vector2(this.transform.position.x - (gameHandler.blockSize * i), this.transform.position.y - (gameHandler.blockSize * i)));
+					grid.RemoveBlock(x + i, y - i);
+					this.EmitParticles(emitNum, new Vector2(this.transform.position.x + (gameHandler.blockSize * i), this.transform.position.y - (gameHandler.blockSize * i)));
+					grid.RemoveBlock(x - i, y + i);
+					this.EmitParticles(emitNum, new Vector2(this.transform.position.x - (gameHandler.blockSize * i), this.transform.position.y + (gameHandler.blockSize * i)));
+				}
 				
 				handler.GetComponent<GameHandlerScript>().rowsMoving = true;
 				break;

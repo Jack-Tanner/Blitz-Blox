@@ -86,15 +86,34 @@ public class Grid : MonoBehaviour {
 		GetComponent<AudioSource>().Play ();
 
 		int consecColour=0;
-		string prevColour = blockGrid [0, rowNum].colour;
+		string prevColour = "Null";
 		for (int x = 0; x < gridWidth; x++)
 		{
+			Debug.Log("Current block is " + blockGrid[x,rowNum].colour + " and the previous colour is " + prevColour);
 			if(blockGrid[x,rowNum].colour == prevColour)
 			{
 				consecColour ++;
 				if(consecColour == 2)
 				{
-					specialColour = "Yellow";
+					switch (blockGrid[x, rowNum].colour)
+					{
+						case "Yellow":
+							specialColour = "Yellow";
+							break;
+						case "Blue":
+							specialColour = "Blue";
+							break;
+						case "Red":
+							specialColour = "Red";
+							break;
+						case "Cyan":
+							specialColour = "Cyan";
+							break;
+						case "Green":
+							specialColour = "Green";
+							break;
+					}
+					Debug.Log ("Special colour is " + specialColour);
 				}
 			}
 			else
