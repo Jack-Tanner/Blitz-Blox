@@ -158,6 +158,7 @@ public class GameHandlerScript : MonoBehaviour {
             spawner.ShootSpecial(specialColour);
             GetComponent<MenuPanelHandler>().DeactivatePanel(SpecialButton);
             specialColour = "";
+            blockGrid.specialColour = "";
         }
 	}
 	
