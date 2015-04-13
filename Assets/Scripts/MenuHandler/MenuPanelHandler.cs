@@ -16,4 +16,9 @@ public class MenuPanelHandler : MonoBehaviour {
 		panel.interactable = false;
 		panel.blocksRaycasts = false;
 	}
+
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
 }
