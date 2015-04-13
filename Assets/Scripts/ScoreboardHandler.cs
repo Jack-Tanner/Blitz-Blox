@@ -74,14 +74,15 @@ public class ScoreboardHandler : MonoBehaviour
 
     public void AddNewBestScore(string name, int score, int time)
     {
-        bestScore.name = name;
-        bestScore.score = score;
-        bestScore.time = time;
-
 		List<ScoreEntry> scores = GetAllEntries();
+        
         using (BinaryWriter writer = new BinaryWriter(new FileStream(scoreFile, FileMode.Create)))
         {
-			writer.Write(bestScore.name);
+            writer.Write(name);
+            writer.Write(score);
+            writer.Write(time);
+
+            writer.Write(bestScore.name);
 			writer.Write(bestScore.score);
 			writer.Write(bestScore.time);
 
@@ -92,6 +93,10 @@ public class ScoreboardHandler : MonoBehaviour
 				writer.Write(entry.time);
             }
         }
+
+        bestScore.name = name;
+        bestScore.score = score;
+        bestScore.time = time;
 
     }
 

@@ -8,6 +8,7 @@ public class GameOverScript : MonoBehaviour {
 
 	public GameObject gameOverScore;
 	public GameObject gameOverScreen;
+    public GameObject highScore;
 	public CanvasGroup gameOverPanel;
     public GameObject special;
 
@@ -25,10 +26,18 @@ public class GameOverScript : MonoBehaviour {
 		string scoreMessage = "You Scored:\n" + GetComponent<HandleScore>().score.ToString ();
 		gameOverScore.GetComponent<Text> ().text = scoreMessage;
 
-		//Update Scoreboard (?)
-		if (GetComponent<HandleScore>().score > scoreboard.bestScore.score)
-		{
-			scoreboard.AddNewBestScore("", GetComponent<HandleScore>().score, 0);
-		}
+        if (GetComponent<HandleScore>().score > 0)
+        {
+            //Update Scoreboard (?)
+            if (GetComponent<HandleScore>().score > scoreboard.bestScore.score)
+            {
+                highScore.SetActive(true);
+                scoreboard.AddNewBestScore("", GetComponent<HandleScore>().score, 0);
+            }
+            else
+            {
+                scoreboard.AddScore("", GetComponent<HandleScore>().score, 0);
+            }
+        }
 	}
 }
