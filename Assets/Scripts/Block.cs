@@ -141,12 +141,12 @@ public class Block : MonoBehaviour {
 			float direction = firingVector.x / Mathf.Abs (firingVector.x);
 			if(collider.name == "Right Wall")
 			{
-				//go left(nigga-tive)
+				//go left(negative)
 				firingVector.x *= direction * -1;
 			}
 			else
 			{
-				//go white(positive)
+				//go right(positive)
 				firingVector.x *= direction;
 			}
 			float signX = transform.position.y - collider.transform.position.y / Mathf.Abs (transform.position.y - collider.transform.position.y);
