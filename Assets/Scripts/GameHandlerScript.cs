@@ -9,7 +9,7 @@ public class GameHandlerScript : MonoBehaviour {
 	public Grid blockGrid;
     public Spawner spawner;
 
-	string specialColour = "Blue";
+	string specialColour = "";
 	//bool specialReady = true;
 
 	bool hasLoaded = false;
@@ -153,10 +153,11 @@ public class GameHandlerScript : MonoBehaviour {
 
 	public void ShootSpecial()
 	{
-        if (!rowsMoving && !spawner.shooting)
+        if (specialColour != "" && !rowsMoving && !spawner.shooting)
         {
             spawner.ShootSpecial(specialColour);
             GetComponent<MenuPanelHandler>().DeactivatePanel(SpecialButton);
+            specialColour = "";
         }
 	}
 	
