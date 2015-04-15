@@ -7,7 +7,7 @@ public class PauseMenuHandler : MonoBehaviour {
 
 	void Update () 
 	{
-		if(Input.GetKeyDown (KeyCode.Menu))
+		if(Input.GetKeyDown (KeyCode.Menu) && GetComponent<GameHandlerScript>().gameRunning)
 		{
 			if(Time.timeScale == 0.0f)
 			{
