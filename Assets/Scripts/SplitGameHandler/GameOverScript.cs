@@ -10,14 +10,13 @@ public class GameOverScript : MonoBehaviour {
 	public GameObject gameOverScreen;
     public GameObject highScore;
 	public CanvasGroup gameOverPanel;
-    public GameObject special;
 
     public void GameOver()
 	{
 		//Pause the game
 		GetComponent<PauseUnpause> ().Pause ();		
 		GetComponent<AudioSource>().enabled = false;
-        special.SetActive(false);
+		GetComponent<GameHandlerScript> ().gameRunning = false;
 
 
         //Display Game Over Screen

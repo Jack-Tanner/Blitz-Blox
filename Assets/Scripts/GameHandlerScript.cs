@@ -19,9 +19,15 @@ public class GameHandlerScript : MonoBehaviour {
 
 	public CanvasGroup SpecialButton;
 
-    void Awake()
+	public bool gameRunning;
+
+	void Awake()
+	{
+		gameRunning = true;
+	}
+
+    void Start()
     {
-		GetComponent<MenuPanelHandler>().DeactivatePanel(SpecialButton);
         GetComponent<PauseUnpause>().UnPause();
     }
 
