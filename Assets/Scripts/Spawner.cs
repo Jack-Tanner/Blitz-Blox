@@ -142,7 +142,6 @@ public class Spawner : MonoBehaviour {
 			holder.GetComponent<Animator>().SetInteger("block_colour", 4);
 			break;
 		default:
-            holder.GetComponent<Animator>().SetInteger("block_colour", 1);
             return;
 		}
 	}
