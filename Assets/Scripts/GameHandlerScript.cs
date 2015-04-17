@@ -24,11 +24,13 @@ public class GameHandlerScript : MonoBehaviour {
 	void Awake()
 	{
 		gameRunning = true;
-	}
+        GetComponent<MenuPanelHandler>().DeactivatePanel(SpecialButton);
+    }
 
     void Start()
     {
         GetComponent<PauseUnpause>().UnPause();
+        
     }
 
 	void Update()
