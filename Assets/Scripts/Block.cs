@@ -150,6 +150,7 @@ public class Block : MonoBehaviour {
 				firingVector.x *= direction;
 			}
 			float signX = transform.position.y - collider.transform.position.y / Mathf.Abs (transform.position.y - collider.transform.position.y);
+
 			EmitParticles(5, transform.position+new Vector3(0,(gameHandler.blockSize/2)*signX,0));
 		}
 	}
@@ -288,9 +289,12 @@ public class Block : MonoBehaviour {
 	//-------------------------------------------------------USEFURU FUNCTIONERUこんいちは-------------------------------------------------------------------------------------------------
 	public void EmitParticles(int count, Vector3 location)
 	{
-		GameObject emitObj1 = (GameObject)Instantiate (emitter,location,Quaternion.identity);
-		emitObj1.GetComponent<EmitterKiller>().SetColour(colour);
-		emitObj1.GetComponent<ParticleSystem>().Emit(count);
+		if(colour != "Grey") 
+		{
+			GameObject emitObj1 = (GameObject)Instantiate (emitter,location,Quaternion.identity);
+			emitObj1.GetComponent<EmitterKiller>().SetColour(colour);
+			emitObj1.GetComponent<ParticleSystem>().Emit(count);
+		}
 	}
 	
 	public void SetFiringVectorByAngle(float angle)

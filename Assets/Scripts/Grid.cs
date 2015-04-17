@@ -306,7 +306,7 @@ public class Grid : MonoBehaviour {
 		return new Vector2(locX, locY);
 	}
 
-	Block GridAtPoint(Vector3 worldPos)
+	public Block GridAtPoint(Vector3 worldPos)
 	{
 		float x = worldPos.x / gameHandler.blockSize;
 		float y = worldPos.y / gameHandler.blockSize;
