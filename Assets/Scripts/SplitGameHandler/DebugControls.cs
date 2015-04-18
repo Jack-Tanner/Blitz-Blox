@@ -23,7 +23,6 @@ public class DebugControls : MonoBehaviour {
 		}
 		if (Input.GetKey(KeyCode.T))
 		{
-			//UNLIMITED POWAAAAAAAAHHHHH
 			GetComponent<GameHandlerScript>().spawner.shooting = false;
 		}
 	}

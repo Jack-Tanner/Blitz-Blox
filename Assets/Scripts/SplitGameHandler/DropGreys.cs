@@ -16,7 +16,7 @@ public class DropGreys : MonoBehaviour {
 	//Dump Warning
 	void Update () 
 	{
-		//If the time to dump approaches then warn the Committee of Toilet Security about the dump increase
+		//If the time to dump approaches then warn
 		if(Time.time >= timeToGreyDump - 1.0f && Time.time < timeToGreyDump)
 		{
 			GetComponent<DisplayMessage>().SetMessage("Greys Incoming", -1);

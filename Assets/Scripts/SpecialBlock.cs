@@ -69,6 +69,16 @@ public class SpecialBlock : Block {
 				
 				handler.GetComponent<GameHandlerScript>().rowsMoving = true;
 				break;
+			case "Green":
+				for (int i = 0; i < 10; i++)
+				{
+					grid.RemoveBlock(x + 1, i);
+					this.EmitParticles(emitNum, new Vector2(this.transform.position.x + gameHandler.blockSize, gameHandler.blockSize * i));
+					grid.RemoveBlock(x - 1, i);
+					this.EmitParticles(emitNum, new Vector2(this.transform.position.x - gameHandler.blockSize, gameHandler.blockSize * i));
+				}
+				handler.GetComponent<GameHandlerScript>().rowsMoving = true;
+				break;
 		}
 
         DestroyObject(gameObject);
