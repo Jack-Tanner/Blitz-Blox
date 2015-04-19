@@ -21,6 +21,8 @@ public class GameHandlerScript : MonoBehaviour {
 
 	public bool gameRunning;
 
+    public int gameType;
+
 	void Awake()
 	{
 		gameRunning = true;

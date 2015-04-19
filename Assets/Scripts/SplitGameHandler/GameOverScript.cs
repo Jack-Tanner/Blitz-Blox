@@ -27,16 +27,35 @@ public class GameOverScript : MonoBehaviour {
 
         if (GetComponent<HandleScore>().score > 0)
         {
-            //Update Scoreboard (?)
-            if (GetComponent<HandleScore>().score > scoreboard.bestScore.score)
+
+            if(GetComponent<GameHandlerScript>().gameType == 0)
             {
-                highScore.SetActive(true);
-                scoreboard.AddNewBestScore("", GetComponent<HandleScore>().score, 0);
+                //Update Scoreboard (?)
+                if (GetComponent<HandleScore>().score > scoreboard.bestBlockadeScore.score)
+                {
+                    highScore.SetActive(true);
+                    scoreboard.AddNewBestScore(GetComponent<HandleScore>().score, 0);
+                }
+                else
+                {
+                    scoreboard.AddScore(GetComponent<HandleScore>().score, 0);
+                }
             }
             else
             {
-                scoreboard.AddScore("", GetComponent<HandleScore>().score, 0);
+                if (GetComponent<HandleScore>().score > scoreboard.bestArcadeScore.score)
+                {
+                    highScore.SetActive(true);
+                    scoreboard.AddNewBestScore(GetComponent<HandleScore>().score, 1);
+                }
+                else
+                {
+                    scoreboard.AddScore(GetComponent<HandleScore>().score, 1);
+                }
             }
+
+
+            
         }
 	}
 }

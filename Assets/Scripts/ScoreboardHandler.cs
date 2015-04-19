@@ -3,26 +3,32 @@ using System.Collections;
 using System.IO;
 using System.Collections.Generic;
 
+//0 = Blockade
+//1 = Arcade
+
 public struct ScoreEntry
 {
-    public string name;
+    public int type;
     public int score;
-    public int time;
 }
 
 public class ScoreboardHandler : MonoBehaviour
 {
 
     private string scoreFile = "scores.sb";
-    public ScoreEntry bestScore;
+    public ScoreEntry bestArcadeScore;
+    public ScoreEntry bestBlockadeScore;
 
     // Use this for initialization
     void Start()
     {
-        bestScore = new ScoreEntry();
-        bestScore.name = "";
-        bestScore.score = 0;
-        bestScore.time = 0;
+        bestBlockadeScore = new ScoreEntry();
+        bestBlockadeScore.type = 0;
+        bestBlockadeScore.score = 0;
+
+        bestArcadeScore = new ScoreEntry();
+        bestArcadeScore.type = 1;
+        bestArcadeScore.score = 0;
         ReadHeader();
     }
 
@@ -34,10 +40,11 @@ public class ScoreboardHandler : MonoBehaviour
             {
                 using (BinaryReader reader = new BinaryReader(File.Open(scoreFile, FileMode.Open)))
                 {
-                    bestScore.name = reader.ReadString();
-                    bestScore.score = reader.ReadInt32();
-                    bestScore.time = reader.ReadInt32();
-					Debug.Log(bestScore.score.ToString());
+                    bestBlockadeScore.type = reader.ReadInt32();
+                    bestBlockadeScore.score = reader.ReadInt32();
+
+                    bestArcadeScore.type = reader.ReadInt32();
+                    bestArcadeScore.score = reader.ReadInt32();
                     return true;
                 }
             }
@@ -60,8 +67,10 @@ public class ScoreboardHandler : MonoBehaviour
         {
             using (BinaryWriter writer = new BinaryWriter(new FileStream(scoreFile, FileMode.Create)))
             {
-                writer.Write("");
                 writer.Write(0);
+                writer.Write(0);
+
+                writer.Write(1);
                 writer.Write(0);
             }
         }
@@ -72,43 +81,63 @@ public class ScoreboardHandler : MonoBehaviour
         }
     }
 
-    public void AddNewBestScore(string name, int score, int time)
+    public void AddNewBestScore(int score, int gamemode)
     {
 		List<ScoreEntry> scores = GetAllEntries();
         
         using (BinaryWriter writer = new BinaryWriter(new FileStream(scoreFile, FileMode.Create)))
         {
-            writer.Write(name);
-            writer.Write(score);
-            writer.Write(time);
+            if(gamemode == 0)
+            {
+                writer.Write(0);
+                writer.Write(score);
 
-            writer.Write(bestScore.name);
-			writer.Write(bestScore.score);
-			writer.Write(bestScore.time);
+                writer.Write(1);
+                writer.Write(bestArcadeScore.score);
+
+                writer.Write(0);
+                writer.Write(bestBlockadeScore.score);
+            }
+            else
+            {
+                writer.Write(0);
+                writer.Write(bestBlockadeScore.score);
+                
+                writer.Write(1);
+                writer.Write(score);
+
+                writer.Write(1);
+                writer.Write(bestArcadeScore.score);
+            }
+
+            
 
             foreach (ScoreEntry entry in scores)
             {
-				writer.Write(entry.name);
+				writer.Write(entry.type);
 				writer.Write(entry.score);
-				writer.Write(entry.time);
             }
         }
 
-        bestScore.name = name;
-        bestScore.score = score;
-        bestScore.time = time;
+        if (gamemode == 0)
+        {
+            bestBlockadeScore.score = score;
+        }
+        else
+        {
+            bestArcadeScore.score = score;
+        }
 
     }
 
-    public void AddScore(string name, int score, int time)
+    public void AddScore(int score, int gamemode)
     {
         try
         {
             using (BinaryWriter writer = new BinaryWriter(new FileStream(scoreFile, FileMode.Append)))
             {
-                writer.Write(name);
+                writer.Write(gamemode);
                 writer.Write(score);
-                writer.Write(time);
             }
         }
         catch (IOException e)
@@ -128,18 +157,19 @@ public class ScoreboardHandler : MonoBehaviour
             {
                 using (BinaryReader reader = new BinaryReader(File.Open(scoreFile, FileMode.Open)))
                 {
-                    bestScore.name = reader.ReadString();
-                    bestScore.score = reader.ReadInt32();
-                    bestScore.time = reader.ReadInt32();
-
                     try
                     {
+                        bestBlockadeScore.type = reader.ReadInt32();
+                        bestBlockadeScore.score = reader.ReadInt32();
+
+                        bestArcadeScore.type = reader.ReadInt32();
+                        bestArcadeScore.score = reader.ReadInt32();
+
                         while (reader.BaseStream.Position != reader.BaseStream.Length)
                         {
                             ScoreEntry entry = new ScoreEntry();
-                            entry.name = reader.ReadString();
+                            entry.type = reader.ReadInt32();
                             entry.score = reader.ReadInt32();
-                            entry.time = reader.ReadInt32();
 
                             scores.Add(entry);
                         }

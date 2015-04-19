@@ -6,53 +6,76 @@ public class ShowHighscores : MonoBehaviour {
 	public Camera _cam;
     public ScoreboardHandler scoreHandler;
 
-    public GameObject first, second, third;
+    public GameObject aFirst, aSecond, aThird;
+    public GameObject bFirst, bSecond, bThird;
 
-	public void LoadHighscores()
+    public void LoadHighscores()
 	{
         //include logic for loading and displaying highscores
         List<ScoreEntry> scores = scoreHandler.GetAllEntries();
 
-        if(scoreHandler.bestScore.score > 0)
-            first.GetComponent<UnityEngine.UI.Text>().text = "1) " + scoreHandler.bestScore.score.ToString();
+        if(scoreHandler.bestBlockadeScore.score > 0)
+            bFirst.GetComponent<UnityEngine.UI.Text>().text = "1) " + scoreHandler.bestBlockadeScore.score.ToString();
+        if (scoreHandler.bestArcadeScore.score > 0)
+            aFirst.GetComponent<UnityEngine.UI.Text>().text = "1) " + scoreHandler.bestArcadeScore.score.ToString();
 
-        ScoreEntry secondPlace, thirdPlace;
-        secondPlace.name = "";
-        secondPlace.score = 0;
-        secondPlace.time = 0;
-        thirdPlace = secondPlace;
+        ScoreEntry aSecondPlace, aThirdPlace;
+        aSecondPlace.type = 1;
+        aSecondPlace.score = 0;
+        aThirdPlace = aSecondPlace;
 
-        if (scores.Count >= 2)
+        ScoreEntry bSecondPlace, bThirdPlace;
+        bSecondPlace.type = 0;
+        bSecondPlace.score = 0;
+        bThirdPlace = bSecondPlace;
+
+        Debug.Log(scores.Count.ToString());
+
+
+        foreach (ScoreEntry score in scores)
         {
-            foreach (ScoreEntry score in scores)
+            if (score.type == 0)
             {
-                if(score.score > secondPlace.score)
+                if (score.score > bSecondPlace.score)
                 {
-                    secondPlace = score;
+                    bSecondPlace = score;
                 }
-                else if(score.score > thirdPlace.score)
+                else if (score.score > bThirdPlace.score)
                 {
-                    thirdPlace = score;
+                    bThirdPlace = score;
                 }
             }
-
-            if (secondPlace.score > 0)
+            else
             {
-                second.GetComponent<UnityEngine.UI.Text>().text = "2) " + secondPlace.score.ToString();
-            }
-            if (thirdPlace.score > 0)
-            {
-                third.GetComponent<UnityEngine.UI.Text>().text = "3) " + thirdPlace.score.ToString();
+                if (score.score > aSecondPlace.score)
+                {
+                    aSecondPlace = score;
+                }
+                else if (score.score > aThirdPlace.score)
+                {
+                    aThirdPlace = score;
+                }
             }
         }
-        else if(scores.Count == 1)
+
+        if (aSecondPlace.score > 0)
         {
-            if (scores[0].score > 0)
-            {
-                secondPlace = scores[0];
-                second.GetComponent<UnityEngine.UI.Text>().text = "2) " + secondPlace.score.ToString();
-            }
+            aSecond.GetComponent<UnityEngine.UI.Text>().text = "2) " + aSecondPlace.score.ToString();
         }
+        if (aThirdPlace.score > 0)
+        {
+            aThird.GetComponent<UnityEngine.UI.Text>().text = "3) " + aThirdPlace.score.ToString();
+        }
+
+        if (bSecondPlace.score > 0)
+        {
+            bSecond.GetComponent<UnityEngine.UI.Text>().text = "2) " + bSecondPlace.score.ToString();
+        }
+        if (bThirdPlace.score > 0)
+        {
+            bThird.GetComponent<UnityEngine.UI.Text>().text = "3) " + bThirdPlace.score.ToString();
+        }
+       
 	}
 
 	void Start()
