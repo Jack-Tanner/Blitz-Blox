@@ -5,6 +5,8 @@ public class LevelHandler : MonoBehaviour {
 
 	int _level;
 
+    public float constant = 2.0f;
+
 	// Use this for initialization
 	void Awake () 
 	{
@@ -36,9 +38,12 @@ public class LevelHandler : MonoBehaviour {
 	{
 		_level = newLevel;
 
-		GetComponent<GameHandlerScript> ().spawner.speed = GetComponent<GameHandlerScript> ().spawner.baseSpeed + (_level - 1) * 2f;
+        GetComponent<GameHandlerScript>().spawner.speed = GetComponent<GameHandlerScript>().spawner.baseSpeed + (_level - 1) + constant;
 
-		if(GetComponent<GameHandlerScript>().spawner.speed >70f) GetComponent<GameHandlerScript>().spawner.speed =70f;
+        if (GetComponent<GameHandlerScript>().spawner.speed > 70f)
+        {
+            GetComponent<GameHandlerScript>().spawner.speed = 70f;
+        }
 
 		GetComponent<DisplayMessage> ().SetMessage ("Level: " + _level.ToString (), 50);
 	}

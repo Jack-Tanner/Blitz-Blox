@@ -310,7 +310,10 @@ public class Block : MonoBehaviour {
 	
 	public void SetSpeed(float newSpeed)
 	{
-		_speed = newSpeed;
+        if (newSpeed > (50.0f / 120.0f))
+            _speed = 50.0f / 120.0f;
+        else
+		    _speed = newSpeed;
 	}
 	
 	//Call this once per Update to move the block

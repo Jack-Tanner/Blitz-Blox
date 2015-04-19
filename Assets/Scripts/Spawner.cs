@@ -8,7 +8,7 @@ public class Spawner : MonoBehaviour {
 	public GameObject[] specialBlocks;
 
 	//The minimum speed
-	public float baseSpeed = 21f;
+	public float baseSpeed = 25.0f;
 	//The current speed
 	public float speed;
 

@@ -31,6 +31,15 @@ public class HandleScore : MonoBehaviour {
 		UpdateScoreDisplay();
 	}
 
+    public void AddToScore(int amount)
+    {
+        UpdateMultiplier();
+        score += amount * multiplier;
+
+        UpdateMultiplier();
+        UpdateScoreDisplay();
+    }
+
 	void UpdateScoreDisplay()
 	{
 		sDisp.text = score.ToString();

@@ -71,6 +71,8 @@ public class Grid : MonoBehaviour {
 				blockGrid[x, y].EmitParticles(75, blockGrid[x, y].transform.position);
 				DestroyObject(blockGrid[x, y].gameObject);
 				blockGrid[x, y] = null;
+
+                gameHandler.GetComponent<HandleScore>().AddToScore(1);
 			}
 		}
 		catch
